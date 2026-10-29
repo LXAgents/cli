@@ -28,7 +28,7 @@ export class McpServer {
 
     switch (method) {
       case "initialize":
-        return jsonrpc(id, initializeResponse(this.capabilities));
+        return jsonrpc(id, initializeResponse({ capabilities: this.capabilities }));
       case "initialized":
         // Notification: no response.
         return null;

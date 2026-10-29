@@ -4,7 +4,7 @@
  * No transport logic, no CLI args.
  */
 
-import { OpenRouterClient } from "../client/openrouter.js";
+import { OpenRouterClient } from "../../client/openrouter.js";
 import { resolveConfig } from "../../config.js";
 
 export const CHAT_TOOL = {

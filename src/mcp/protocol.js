@@ -10,9 +10,9 @@ export const CAPABILITIES = {
   tools: { listChanged: false },
 };
 
-export function initializeResponse({ protocolVersion, capabilities }) {
+export function initializeResponse({ capabilities } = {}) {
   return {
-    protocolVersion,
+    protocolVersion: PROTOCOL_VERSION,
     capabilities,
     serverInfo: {
       name: "claude-mirror",
