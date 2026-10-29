@@ -11,6 +11,17 @@
 | 3 | OpenRouter API client | Chat/completions request + streaming response, env-based API key | `feat/openrouter-client` | `src/openrouter.ts` | |
 | 4 | CLI entry point | Arg parsing (`--model`, `--system`), stdin/args input, stream output | `feat/cli` | `src/index.ts`, `bin/` | |
 | 5 | Verify run | Build and run end-to-end against OpenRouter | `fix/cli-run` | `src/` | |
+|   |   |   |   |   |   |
+
+## Task 5 — fix/cli-run
+
+- Syntax-checked `bin/claude-mirror.js` and `src/openrouter.js` with `node --check` (both OK).
+- Verified `--help` (rc 0), no-args (usage, rc 1), and missing-key (clear error, rc 1) locally — no network or API key required.
+- Live end-to-end run against OpenRouter is blocked: no `OPENROUTER_API_KEY` is set in the environment, and I have not obtained one. To complete task 5, run:
+    export OPENROUTER_API_KEY=<your key>
+    node bin/claude-mirror.js "Say hi"
+  or pipe a message via stdin.
+- Next task: release (version pending your approval).
 | 6 | Release | Version, changelog, index rows, close out record | `release/1.0.0` (pending version approval) | `wiki/logs/...` | |
 
 ## Task 1 — plan/claude-mirror-openrouter
