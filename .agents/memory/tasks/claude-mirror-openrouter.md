@@ -17,12 +17,17 @@
 
 - Syntax-checked `bin/claude-mirror.js` and `src/openrouter.js` with `node --check` (both OK).
 - Verified `--help` (rc 0), no-args (usage, rc 1), and missing-key (clear error, rc 1) locally — no network or API key required.
-- Live end-to-end run against OpenRouter is blocked: no `OPENROUTER_API_KEY` is set in the environment, and I have not obtained one. To complete task 5, run:
-    export OPENROUTER_API_KEY=<your key>
-    node bin/claude-mirror.js "Say hi"
-  or pipe a message via stdin.
-- Next task: release (version pending your approval).
-| 6 | Release | Version, changelog, index rows, close out record | `release/1.0.0` (pending version approval) | `wiki/logs/...` | |
+- Live end-to-end run against OpenRouter complete (user ran in their shell):
+    echo "Say hi" | node bin/claude-mirror.js
+    Hi there! How can I assist you today?
+  Streaming works end-to-end through src/openrouter.js → bin/claude-mirror.js.
+## Task 6 — release/1.0.0
+
+- Created `wiki/logs/1/0/0/README.md` — version claim, changelog (Overview/Added/Modified/Deleted/Summary).
+- Filled the PR column: no pull requests were opened (not pushed to a forge); marked `—`.
+- Live end-to-end verified against OpenRouter on this branch's ancestors.
+- Record closed out — release task done.
+| 6 | Release | Version, changelog, index rows, close out record | `release/1.0.0` | `wiki/logs/1/0/0/` | — (no PRs opened; not pushed) |
 
 ## Task 1 — plan/claude-mirror-openrouter
 
