@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "Claude CLI mirror that routes natively through OpenRouter",
   "bin": {
-    "claude-mirror": "bin/claude-mirror.js"
+    "claude-mirror": "src/cli.js"
   },
   "type": "module",
   "scripts": {
-    "start": "node bin/claude-mirror.js"
+    "start": "node src/cli.js"
   },
   "engines": {
     "node": ">=22"

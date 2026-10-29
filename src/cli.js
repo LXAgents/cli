@@ -5,13 +5,13 @@
  * modules; contains no business logic of its own.
  */
 
-import { resolveConfig } from "../src/config.js";
-import { parseArgs, usage } from "../src/args.js";
-import { resolveMessage } from "../src/io.js";
-import { Terminal } from "../src/output/terminal.js";
-import { OpenRouterClient } from "../src/client/openrouter.js";
-import { createMcpChatServer } from "../src/mcp/server-tools.js";
-import { createRunner } from "../src/mcp/runner.js";
+import { resolveConfig } from "./config.js";
+import { parseArgs, usage } from "./args.js";
+import { resolveMessage } from "./io.js";
+import { Terminal } from "./output/terminal.js";
+import { OpenRouterClient } from "./client/openrouter.js";
+import { createMcpChatServer } from "./mcp/server-tools.js";
+import { createRunner } from "./mcp/runner.js";
 
 async function runDirect(terminal, config, options) {
   let message = options.message;
