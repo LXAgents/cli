@@ -1,0 +1,21 @@
+# Task record — claude-mirror-openrouter
+
+**Branch:** `plan/claude-mirror-openrouter`
+**Goal:** Recreate a Claude CLI mirror for personal use, routing natively through OpenRouter.
+**Objective:** A runnable `claude-mirror` CLI that sends a message to an OpenRouter model and streams the text response to the terminal; default model overridable via `--model`; API key read from env/config.
+
+| # | Title | Scope | Branch | Files / areas | PR |
+|---|-------|-------|--------|---------------|----|
+| 1 | Task record + agents instructions | Create the task record and copy the three `.agents/*.md` instruction files into the repo | `plan/claude-mirror-openrouter` | `.agents/memory/tasks/`, `.agents/` | |
+| 2 | Scaffold CLI project | `package.json`, `tsconfig.json`, `.gitignore`, entry script | `feat/scaffold` | root | |
+| 3 | OpenRouter API client | Chat/completions request + streaming response, env-based API key | `feat/openrouter-client` | `src/openrouter.ts` | |
+| 4 | CLI entry point | Arg parsing (`--model`, `--system`), stdin/args input, stream output | `feat/cli` | `src/index.ts`, `bin/` | |
+| 5 | Verify run | Build and run end-to-end against OpenRouter | `fix/cli-run` | `src/` | |
+| 6 | Release | Version, changelog, index rows, close out record | `release/1.0.0` (pending version approval) | `wiki/logs/...` | |
+
+## Task 1 — plan/claude-mirror-openrouter
+
+- Created `.agents/memory/tasks/claude-mirror-openrouter.md` (this record) with the plan.
+- Copied `.agents/branching-strategy.md`, `.agents/commit-conventions.md`, `.agents/plan-creator.md` into the repo from the workspace `.agents/`.
+- No `.gitignore` exists; `git check-ignore .agents/plans/tasks.md` prints nothing — the plans folder is not yet excluded. Reported as a finding; not added by me (plan-creator: the rule belongs to the repo owner).
+- Next task: scaffold the CLI project on `feat/scaffold`.
