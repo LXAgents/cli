@@ -10,17 +10,10 @@ import { parseArgs, usage } from "../src/args.js";
 import { resolveMessage } from "../src/io.js";
 import { Terminal } from "../src/output/terminal.js";
 import { OpenRouterClient } from "../src/client/openrouter.js";
+import { createMcpChatServer } from "../src/mcp/server-tools.js";
+import { createRunner } from "../src/mcp/runner.js";
 
-async function main() {
-  const terminal = new Terminal();
-  const config = resolveConfig();
-  const options = parseArgs(process.argv.slice(2));
-
-  if (options.help) {
-    terminal.writeLine(usage(config.defaultModel));
-    return 0;
-  }
-
+async function runDirect(terminal, config, options) {
   let message = options.message;
   if (!message) {
     message = await resolveMessage(undefined);
@@ -53,6 +46,48 @@ async function main() {
     terminal.error(`Error: ${err.message}`);
     return 1;
   }
+}
+
+async function runMcp(config) {
+  if (!config.apiKey) {
+    process.stderr.write(
+      "Error: OPENROUTER_API_KEY is not set. Export it or pass apiKey to the client.\n"
+    );
+    return 1;
+  }
+
+  const { server } = createMcpChatServer();
+  const runner = createRunner(server);
+  runner.start();
+
+  // Keep the process alive until stdin closes.
+  return new Promise((resolve) => {
+    process.stdin.on("end", () => {
+      runner.close();
+      resolve(0);
+    });
+    process.stdin.on("error", () => {
+      runner.close();
+      resolve(0);
+    });
+  });
+}
+
+async function main() {
+  const terminal = new Terminal();
+  const config = resolveConfig();
+  const options = parseArgs(process.argv.slice(2));
+
+  if (options.help) {
+    terminal.writeLine(usage(config.defaultModel));
+    return 0;
+  }
+
+  if (options.mcp) {
+    return runMcp(config);
+  }
+
+  return runDirect(terminal, config, options);
 }
 
 const code = await main();

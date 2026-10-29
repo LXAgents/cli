@@ -6,7 +6,12 @@
 const DEFAULT_MODEL = "openai/gpt-4o-mini";
 
 export function parseArgs(argv) {
-  const options = { model: DEFAULT_MODEL, system: undefined, message: undefined };
+  const options = {
+    model: DEFAULT_MODEL,
+    system: undefined,
+    message: undefined,
+    mcp: false,
+  };
   let i = 0;
   while (i < argv.length) {
     const arg = argv[i];
@@ -16,6 +21,8 @@ export function parseArgs(argv) {
       options.system = argv[++i];
     } else if (arg === "--help" || arg === "-h") {
       options.help = true;
+    } else if (arg === "--mcp") {
+      options.mcp = true;
     } else if (!options.message) {
       options.message = arg;
     } else {
@@ -33,6 +40,7 @@ Options:
   --model <id>    OpenRouter model id (default: ${defaultModel})
   --system <text> System prompt
   --help          Show this help
+  --mcp           Run as an MCP server over stdio
 
 The message may be passed as an argument or piped via stdin.
 Set OPENROUTER_API_KEY in your environment (or a .env file).`;
