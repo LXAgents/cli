@@ -1,96 +1,59 @@
 #!/usr/bin/env node
 /**
- * claude-mirror CLI entry point.
- *
- * Usage:
- *   claude-mirror "What is the capital of France?"
- *   echo "Say hi" | claude-mirror
- *   claude-mirror --model openai/gpt-4o-mini --system "Be brief." "Hi"
+ * CLI entry point — single responsibility: wire modules and run the program.
+ * Delegates config, args, IO, output, and the OpenRouter client to their own
+ * modules; contains no business logic of its own.
  */
 
-import { createInterface } from "node:readline";
-import { OpenRouterClient } from "../src/openrouter.js";
-
-const DEFAULT_MODEL = "openai/gpt-4o-mini";
-
-function usage() {
-  console.error(
-    `Usage: claude-mirror [options] <message>
-
-Options:
-  --model <id>    OpenRouter model id (default: ${DEFAULT_MODEL})
-  --system <text> System prompt
-  --help          Show this help
-
-The message may be passed as an argument or piped via stdin.
-Set OPENROUTER_API_KEY in your environment (or a .env file).`
-  );
-}
-
-function parseArgs(argv) {
-  const options = { model: DEFAULT_MODEL, system: undefined, message: undefined };
-  let i = 0;
-  while (i < argv.length) {
-    const arg = argv[i];
-    if (arg === "--model") {
-      options.model = argv[++i];
-    } else if (arg === "--system") {
-      options.system = argv[++i];
-    } else if (arg === "--help" || arg === "-h") {
-      usage();
-      process.exit(0);
-    } else if (!options.message) {
-      options.message = arg;
-    } else {
-      options.message += " " + arg;
-    }
-    i++;
-  }
-  return options;
-}
-
-async function readStdin() {
-  const lines = [];
-  const rl = createInterface({ input: process.stdin });
-  for await (const line of rl) {
-    lines.push(line);
-  }
-  return lines.join("\n");
-}
+import { resolveConfig } from "../src/config.js";
+import { parseArgs, usage } from "../src/args.js";
+import { resolveMessage } from "../src/io.js";
+import { Terminal } from "../src/output/terminal.js";
+import { OpenRouterClient } from "../src/client/openrouter.js";
 
 async function main() {
+  const terminal = new Terminal();
+  const config = resolveConfig();
   const options = parseArgs(process.argv.slice(2));
+
+  if (options.help) {
+    terminal.writeLine(usage(config.defaultModel));
+    return 0;
+  }
 
   let message = options.message;
   if (!message) {
-    // Not a TTY -> read stdin.
-    if (!process.stdin.isTTY) {
-      message = await readStdin();
-    }
+    message = await resolveMessage(undefined);
   }
 
   if (!message) {
-    usage();
-    process.exit(1);
+    terminal.error(usage(config.defaultModel));
+    return 1;
   }
 
   const messages = [{ role: "user", content: message }];
 
-  const client = new OpenRouterClient({ model: options.model });
-  const onText = (delta) => process.stdout.write(delta);
+  const client = new OpenRouterClient({
+    apiKey: config.apiKey,
+    baseUrl: config.baseUrl,
+    referer: config.referer,
+    title: config.title,
+  });
 
   try {
     await client.chat({
-      model: options.model,
+      model: options.model || config.defaultModel,
       messages,
       system: options.system,
-      onText,
+      onText: (delta) => terminal.write(delta),
     });
-    process.stdout.write("\n");
+    terminal.writeLine("");
+    return 0;
   } catch (err) {
-    console.error(`Error: ${err.message}`);
-    process.exit(1);
+    terminal.error(`Error: ${err.message}`);
+    return 1;
   }
 }
 
-main();
+const code = await main();
+process.exit(code);

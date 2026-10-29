@@ -11,7 +11,21 @@
 | 3 | OpenRouter API client | Chat/completions request + streaming response, env-based API key | `feat/openrouter-client` | `src/openrouter.ts` | |
 | 4 | CLI entry point | Arg parsing (`--model`, `--system`), stdin/args input, stream output | `feat/cli` | `src/index.ts`, `bin/` | |
 | 5 | Verify run | Build and run end-to-end against OpenRouter | `fix/cli-run` | `src/` | |
-|   |   |   |   |   |   |
+## Task 7 — refactor/single-responsibility
+
+- Split `src/openrouter.js` into single-responsibility modules:
+  - `src/config.js` — env + defaults
+  - `src/client/openrouter.js` — HTTP POST /chat/completions streaming
+  - `src/client/stream-parser.js` — SSE chunk → text delta parsing
+  - `src/output/terminal.js` — stdout/stderr writing
+  - `src/args.js` — CLI argument parsing
+  - `src/io.js` — message resolution from args/stdin
+  - `bin/claude-mirror.js` — module composition only (thin entry point)
+- Removed monolithic `src/openrouter.js`
+- Added `.agents/rules/no-spaghetti.md`, `.agents/rules/folder-layout.md`, `.agents/rules/single-responsibility.md`
+- Verified: all modules pass `node --check`; `--help`, no-args, missing-key paths still correct.
+- Live end-to-end test could not be re-run here (credential leakage blocks embedding the API key); the user can run `echo "Say hi" | node bin/claude-mirror.js` with `OPENROUTER_API_KEY` set.
+| 7 | Refactor to single-responsibility | Split monolithic src/openrouter.js into modules under src/{client,output}/, add args.js/io.js/config.js, thin bin/ entry point, add .agents/rules/*.md | `refactor/single-responsibility` | `src/`, `bin/`, `.agents/rules/` | |
 
 ## Task 5 — fix/cli-run
 
