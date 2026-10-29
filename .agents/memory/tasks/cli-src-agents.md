@@ -19,3 +19,29 @@
 - Created `.agents/plans/` working plan files: `tasks.md`, `scope.md`, `git-workflow.md`, `verification.md`, `README.md`.
 - `.gitignore` already excludes `.agents/plans/` (verified via `git check-ignore -v`).
 - Existing instruction files served from workspace `shared-instruction`; no instruction files duplicated into `cli/.agents/` per user request.
+
+## Task 2 — feat/cli-src-layout
+
+- Moved `bin/claude-mirror.js` to `src/cli.js` with imports repointed to `./`.
+- Removed `bin/` entirely.
+- `package.json` `bin["claude-mirror"]` and `start` script now point at `src/cli.js`.
+- Committed 871c1fe.
+
+## Task 3 — docs/cli-agents-index
+
+- Created `src/index.md` documenting direct run and MCP stdio use with agents.
+- Committed 834ea47.
+
+## Task 4 — fix/cli-verify
+
+- `node --check src/cli.js` passes.
+- `--help` exits 0; no args prints usage and exits 1.
+- MCP mode over stdio: initialize and tools/list respond correctly (notification produces no response).
+- No commit — pure verification task, nothing changed.
+
+## Task 5 — release/1.2.0
+
+- `wiki/logs/1/2/0/README.md` — version claim + changelog.
+- Closed out this record: PR column filled, Task 5 entry added, record marked done.
+- PRs not yet opened; awaiting user approval to push and merge (see §F gate).
+
