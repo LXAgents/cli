@@ -19,40 +19,36 @@ export class McpServer {
     this.onToolCall = onToolCall;
   }
 
-  handle(message) {
+  /**
+   * Handle one MCP JSON-RPC message. Returns a response object (or a
+   * Promise<Response> when a tool call is async), or null for notifications.
+   */
+  async handle(message) {
     const { id, method, params } = message;
 
     switch (method) {
       case "initialize":
-        return this._respond(id, initializeResponse(this.capabilities));
+        return jsonrpc(id, initializeResponse(this.capabilities));
       case "initialized":
         // Notification: no response.
         return null;
       case "tools/list":
-        return this._respond(id, toolsListResponse({ tools: this.tools }));
+        return jsonrpc(id, toolsListResponse({ tools: this.tools }));
       case "tools/call": {
         const name = params?.name;
         const arguments_ = params?.arguments ?? {};
         if (!this.onToolCall) {
-          return this._error(id, ErrorCode.INTERNAL_ERROR, "no tool handler");
+          return jsonrpcError(id, ErrorCode.INTERNAL_ERROR, "no tool handler");
         }
         try {
-          const result = this.onToolCall(name, arguments_);
-          return this._respond(id, result);
+          const result = await this.onToolCall(name, arguments_);
+          return jsonrpc(id, result);
         } catch (err) {
-          return this._error(id, ErrorCode.INTERNAL_ERROR, err.message);
+          return jsonrpcError(id, ErrorCode.INTERNAL_ERROR, err.message);
         }
       }
       default:
-        return this._error(id, ErrorCode.METHOD_NOT_FOUND, `method not found: ${method}`);
+        return jsonrpcError(id, ErrorCode.METHOD_NOT_FOUND, `method not found: ${method}`);
     }
-  }
-
-  _respond(id, result) {
-    return jsonrpc(id, result);
-  }
-
-  _error(id, code, message) {
-    return jsonrpcError(id, code, message);
   }
 }
