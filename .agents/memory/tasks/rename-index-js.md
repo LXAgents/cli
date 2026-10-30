@@ -16,3 +16,16 @@
 - Created `.agents/memory/tasks/rename-index-js.md` (this record) with the plan.
 - Created `.agents/plans/` working plan files: `tasks.md`, `scope.md`, `git-workflow.md`, `verification.md`, `README.md`.
 - `.gitignore` already excludes `.agents/plans/`.
+
+## Task 2 — feat/rename-index-js
+
+- Renamed `src/index.md` → `src/index.js` via `git mv` (history preserved); content unchanged.
+- Deleted `.agents/branching-strategy.md`, `.agents/commit-conventions.md`, `.agents/plan-creator.md` (duplicate of shared-instruction).
+- Committed 364319d.
+
+## Task 3 — release/1.2.1
+
+- `wiki/logs/1/2/1/README.md` — version claim + changelog for the rename + cleanup release.
+- Closed out this record: task entries 2 and 3 added.
+- PRs not yet opened; awaiting user approval to push and merge (see §F gate).
+
